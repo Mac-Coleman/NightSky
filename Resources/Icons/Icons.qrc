@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="Icons">
+    <file>round-star.svg</file>
+    <file>info.svg</file>
+    <file>look-at.svg</file>
+    <file>galaxy.svg</file>
+    <file>satellite-communication.svg</file>
+    <file>polar-star.svg</file>
+    <file>solar-system.svg</file>
+    <file>magnifying-glass.svg</file>
+    <file>round-star-yellow.svg</file>
+    <file>round-star-empty.svg</file>
+  </qresource>
+</RCC>
