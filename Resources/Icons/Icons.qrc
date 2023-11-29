@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Icons">
+    <file>position-marker.svg</file>
     <file>round-star.svg</file>
     <file>info.svg</file>
     <file>look-at.svg</file>
