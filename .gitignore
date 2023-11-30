@@ -1,3 +1,18 @@
+# Jetbrains IDEA files.
+.idea/
+*.iws
+**workspace.xml
+**tasks.xml
+
+# Python files made with pyside6-uic
 **/UI/*.py
-__pycache__
+
+# Python resource files made with pyside6-rcc
 *_rc.py
+
+# Compiled python package files
+__pycache__
+
+# Data input files:
+*.bsp
+*.dat
