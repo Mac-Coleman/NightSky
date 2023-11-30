@@ -1,14 +1,14 @@
 <RCC>
   <qresource prefix="Icons">
-    <file>position-marker.svg</file>
-    <file>round-star.svg</file>
-    <file>info.svg</file>
+    <file alias="pin">position-marker.svg</file>
+    <file alias="like-star-checked-white">round-star.svg</file>
+    <file alias="info-white">info.svg</file>
     <file>look-at.svg</file>
-    <file>galaxy.svg</file>
-    <file>satellite-communication.svg</file>
-    <file>polar-star.svg</file>
-    <file>solar-system.svg</file>
-    <file>magnifying-glass.svg</file>
+    <file alias="galaxy-white">galaxy.svg</file>
+    <file alias="satellite-white">satellite-communication.svg</file>
+    <file alias="star-white">polar-star.svg</file>
+    <file alias="solar-system-white">solar-system.svg</file>
+    <file alias="magnifying-glass-white">magnifying-glass.svg</file>
     <file>round-star-yellow.svg</file>
     <file>round-star-empty.svg</file>
   </qresource>

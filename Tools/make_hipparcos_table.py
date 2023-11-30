@@ -1,5 +1,7 @@
 import sqlite3
 import pandas
+from skyfield.api import load
+from skyfield.data import hipparcos
 
 connection = sqlite3.connect("../nightsky.db")
 
@@ -47,6 +49,7 @@ common_names = {}
 for index, row in common_table.iterrows():
     common_names[str(row[1])] = row[0].strip()
 
+load.open(hipparcos.URL, filename="../hip_main.dat")
 df = pandas.read_csv("../hip_main.dat", sep="|", header=None)
 
 count = 0
