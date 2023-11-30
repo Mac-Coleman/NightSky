@@ -1,3 +1,4 @@
 *.svg filter=lfs diff=lfs merge=lfs -text
 *.ui filter=lfs diff=lfs merge=lfs -text
 *.tsv filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
