@@ -8,6 +8,7 @@ from PySide6.QtCore import QTimer
 
 from skyfield.api import load, load_file, Topos
 from skyfield.magnitudelib import planetary_magnitude
+from skyfield.starlib import Star
 
 from Search_Item.UI.SearchItem import Ui_w_SearchItem
 
@@ -70,7 +71,6 @@ class PlanetItem(SearchItem):
         astrometric = geographic.at(skyTime).observe(self.object).apparent()
         radec = astrometric.radec()
         altaz = astrometric.altaz()
-        print(altaz)
 
         self.updateRA(radec[0])
         self.updateDEC(radec[1])
@@ -91,16 +91,25 @@ class PlanetItem(SearchItem):
 
 
 class StarItem(SearchItem):
-    def __init__(self, title, desc, skyfield_object):
+    def __init__(self, title, desc, skyfield_object, apparent_magnitude):
         super().__init__(title, desc, skyfield_object)
         self.lb_icon.setPixmap(QPixmap(u":/Icons/polar-star.svg"))
+        self.lb_magnitude.setText(f"<b>{apparent_magnitude:0.2f}</b>")
 
     def updatePosition(self):
-        earth = QApplication.instance().earth
         skyTime = QApplication.instance().skyTime
+        geographic = QApplication.instance().geographic
 
-        astrometric = earth.at(skyTime).apparent(self.object)
-        print(astrometric.radec())
+        astrometric = geographic.at(skyTime).observe(self.object).apparent()
+        radec = astrometric.radec()
+        altaz = astrometric.altaz()
+
+        self.updateRA(radec[0])
+        self.updateDEC(radec[1])
+        self.updateDist(radec[2])
+
+        self.updateAlt(altaz[0])
+        self.updateAz(altaz[1])
 
 class MessierItem(SearchItem):
     def __init__(self, title, desc, skyfield_object):
@@ -119,7 +128,14 @@ if __name__ == "__main__":
     app.skyTime = ts.now()
     app.geographic = app.earth + Topos(41.92, -91.42)
 
-    s = PlanetItem("Mercury", "The second planet from the sun", planet)
+    # s = PlanetItem("Mercury", "The second planet from the sun", planet)
+    barnard = Star(ra_hours=(17, 57, 48.49803),
+                   dec_degrees=(4, 41, 36.2072),
+                   ra_mas_per_year=-798.71,
+                   dec_mas_per_year=10337.77,
+                   parallax_mas=545.4,
+                   radial_km_per_s=-110.6)
+    s = StarItem("Barnard's Star", "The star moving fastest across our sky.", barnard, 9.51)
 
     def handleTimer():
         app.skyTime = ts.now()
