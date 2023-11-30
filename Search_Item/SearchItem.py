@@ -53,7 +53,7 @@ class SearchItem(QWidget, Ui_w_SearchItem):
 class SatelliteItem(SearchItem):
     def __init__(self, title, desc, skyfield_object, norad_id):
         super().__init__(title, desc, skyfield_object)
-        self.lb_icon.setPixmap(QPixmap(u":/Icons/satellite-communication.svg"))
+        self.lb_icon.setPixmap(QPixmap(u":/Icons/satellite-white"))
         self.lb_magnitude.setText("<b>Unknown</b>")
         self.norad_id = norad_id
         self.pb_infoButton.clicked.connect(self.handleInfo)
@@ -82,7 +82,7 @@ class PlanetItem(SearchItem):
     def __init__(self, title, desc, skyfield_object):
         super().__init__(title, desc, skyfield_object)
         self.title = title
-        self.lb_icon.setPixmap(QPixmap(u":/Icons/solar-system.svg"))
+        self.lb_icon.setPixmap(QPixmap(u":/Icons/solar-system-white"))
 
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
@@ -141,7 +141,7 @@ class StarItem(SearchItem):
 class MessierItem(SearchItem):
     def __init__(self, title, desc, skyfield_object, apparent_magnitude, distance, messier):
         super().__init__(title, desc, skyfield_object)
-        self.lb_icon.setPixmap(QPixmap(u":/Icons/galaxy.svg"))
+        self.lb_icon.setPixmap(QPixmap(u":/Icons/galaxy-white"))
         self.lb_magnitude.setText(f"<b>{apparent_magnitude:0.2f}</b>")
         self.updateDist(distance, 'ly')
 

@@ -1,10 +1,14 @@
 # This Python file uses the following encoding: utf-8
+from enum import Enum
 import sqlite3
-from objects import MessierObject, SolarSystemObject
+
+from PySide6.QtWidgets import QApplication
 
 from skyfield.api import Star
 
-from enum import Enum
+from Search_Item.SearchItem import SatelliteItem, PlanetItem, StarItem, MessierItem
+
+from objects import MessierObject, SolarSystemObject
 
 class TableSelection(Enum):
     SATELLITE = 1
@@ -13,7 +17,6 @@ class TableSelection(Enum):
     MESSIER = 4
 
 from object_widgets import ObjectCard
-from Search_Item.SearchItem import StarItem
 
 class DatabaseManager(object):
     def __new__(cls):
@@ -60,10 +63,12 @@ class DatabaseManager(object):
         )
 
         def make_card(solarsystemObject):
-            return ObjectCard(solarsystemObject[3], solarsystemObject[0], solarsystemObject[1], TableSelection.SOLAR_SYSTEM)
+            i = PlanetItem(solarsystemObject[3], "Null", QApplication.instance().ephemeris[solarsystemObject[4]])
+            i.updatePosition()
+            return i
         
         return map(make_card, rows)
-    
+
     def searchSatellites(self, term: str, favorited: bool) -> list[ObjectCard]:
         pass
 
@@ -82,7 +87,7 @@ class DatabaseManager(object):
         def make_card(star):
             # return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
             s = Star(ra_hours=star[3], dec_degrees=star[4], ra_mas_per_year=star[5], dec_mas_per_year=star[6], parallax_mas=star[7])
-            i = StarItem(star[10], star[9], s, star[8], star[2])
+            i = StarItem(star[10], f"A {star[9]} star", s, star[8], star[2])
             i.updatePosition()
             return i
         
@@ -101,7 +106,10 @@ class DatabaseManager(object):
         )
 
         def make_card(messier_object):
-            return ObjectCard(messier_object[3], messier_object[0], messier_object[1], TableSelection.MESSIER)
+            s = Star(ra_hours=messier_object[6], dec_degrees=messier_object[7])
+            i = MessierItem(messier_object[3], messier_object[4], s, messier_object[5], messier_object[11], messier_object[2])
+            i.updatePosition()
+            return i
 
         return map(make_card, rows)
     
