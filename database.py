@@ -2,6 +2,8 @@
 import sqlite3
 from objects import MessierObject, SolarSystemObject
 
+from skyfield.api import Star
+
 from enum import Enum
 
 class TableSelection(Enum):
@@ -11,6 +13,7 @@ class TableSelection(Enum):
     MESSIER = 4
 
 from object_widgets import ObjectCard
+from Search_Item.SearchItem import StarItem
 
 class DatabaseManager(object):
     def __new__(cls):
@@ -77,7 +80,11 @@ class DatabaseManager(object):
             )
         
         def make_card(star):
-            return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
+            # return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
+            s = Star(ra_hours=star[3], dec_degrees=star[4], ra_mas_per_year=star[5], dec_mas_per_year=star[6], parallax_mas=star[7])
+            i = StarItem(star[10], star[9], s, star[8], star[2])
+            i.updatePosition()
+            return i
         
         return map(make_card, rows)
     

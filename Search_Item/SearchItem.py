@@ -115,7 +115,7 @@ class PlanetItem(SearchItem):
 class StarItem(SearchItem):
     def __init__(self, title, desc, skyfield_object, apparent_magnitude, hip):
         super().__init__(title, desc, skyfield_object)
-        self.lb_icon.setPixmap(QPixmap(u":/Icons/polar-star.svg"))
+        self.lb_icon.setPixmap(QPixmap(u":/Icons/star-white"))
         self.lb_magnitude.setText(f"<b>{apparent_magnitude:0.2f}</b>")
         self.hip = hip
         self.pb_infoButton.clicked.connect(self.handleInfo)
