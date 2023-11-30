@@ -1,4 +1,8 @@
 import sqlite3
+from skyfield.api import Loader
+
+load = Loader('../')
+load('de421.bsp')
 
 connection = sqlite3.connect("../nightsky.db")
 
