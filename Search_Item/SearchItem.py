@@ -4,6 +4,7 @@ import webbrowser
 import skyfield.api
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtGui import QPixmap
+from PySide6.QtCore import QTimer
 
 from skyfield.api import load, load_file, Topos
 from skyfield.magnitudelib import planetary_magnitude
@@ -36,7 +37,7 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         self.lb_distance.setText(s)
 
     def updateMag(self, mag):
-        s = f"<b>{mag}</b>"
+        s = f"<b>{mag:0.2f}</b>"
         self.lb_magnitude.setText(s)
 
     def updateAlt(self, alt):
@@ -114,10 +115,21 @@ if __name__ == "__main__":
     planet = ephemeris["Mercury"]
 
     app.earth = ephemeris["Earth"]
-    app.skyTime = load.timescale().now()
+    ts = load.timescale()
+    app.skyTime = ts.now()
     app.geographic = app.earth + Topos(41.92, -91.42)
 
     s = PlanetItem("Mercury", "The second planet from the sun", planet)
+
+    def handleTimer():
+        app.skyTime = ts.now()
+        s.updatePosition()
+
+    timer = QTimer()
+    timer.setInterval(500)
+    timer.timeout.connect(handleTimer)
+    timer.start()
+
     s.show()
     s.updatePosition()
 
