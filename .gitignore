@@ -16,3 +16,6 @@ __pycache__
 # Data input files:
 *.bsp
 *.dat
+
+# Program data:
+*.db
