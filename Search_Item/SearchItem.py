@@ -196,8 +196,8 @@ if __name__ == "__main__":
 
     # This TLE might be outdated by the time you're testing this... I'm just using this one for testing.
     # Last Retrieved from Celestrak on 11/29/2023
-    line1 = "1 25544U 98067A   23333.91619101  .00024169  00000+0  43094-3 0  9996"
-    line2 = "2 25544  51.6417 227.6788 0001060 344.9414 118.7978 15.49949661427493"
+    line1 = "1 25544U 98067A   23334.51085929  .00035707  00000+0  63084-3 0  9999"
+    line2 = "2 25544  51.6413 224.7392 0001156 357.9062 186.2241 15.49998792427589"
     iss = EarthSatellite(line1, line2, 'ISS (ZARYA)', ts)
 
     s = SatelliteItem('The ISS', "The International Space Station, the largest crewed spacecraft.", iss, "25544")

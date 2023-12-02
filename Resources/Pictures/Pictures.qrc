@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Pictures">
+    <file alias="pleiades">Pleiades_large.png</file>
+  </qresource>
+</RCC>
