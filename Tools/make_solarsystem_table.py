@@ -23,14 +23,14 @@ de421 = [
     ["Mercury", "Mercury", "mercury"],
     ["Venus", "Venus", "venus"],
     ["Earth", "Earth", "earth"],
-    ["The Moon", "Moon", "the moon luna"],
+    ["Moon", "The Moon", "the moon luna"],
     ["Mars", "Mars", "mars"],
     ["Jupiter Barycenter", "Jupiter", "jupiter"],
     ["Saturn Barycenter", "Saturn", "saturn"],
     ["Uranus Barycenter", "Uranus", "uranus"],
     ["Neptune Barycenter", "Neptune", "neptune"],
     ["Pluto Barycenter", "Pluto", "134340 pluto"],
-    ["The Sun (Sol)", "Sun", "the sun sol g2v"],
+    ["Sun", "The Sun (Sol)", "the sun sol g2v"],
 ]
 
 for key in de421:

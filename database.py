@@ -56,6 +56,8 @@ class DatabaseManager(object):
         if favorited:
             sql += " AND favorited = TRUE"
 
+        sql += " LIMIT 10"
+
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(
             sql,
@@ -78,11 +80,14 @@ class DatabaseManager(object):
         if favorited:
             sql += " AND favorited = TRUE"
 
+        sql += " LIMIT 10"
+
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(
             sql,
             terms_corrected
             )
+
         
         def make_card(star):
             # return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
@@ -98,6 +103,8 @@ class DatabaseManager(object):
 
         if favorited:
             sql += " AND favorited = TRUE"
+
+        sql += " LIMIT 10"
 
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(

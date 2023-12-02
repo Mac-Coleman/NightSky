@@ -39,7 +39,7 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         self.lb_distance.setText(s)
 
     def updateMag(self, mag):
-        s = f"<b>{mag:0.2f}</b>"
+        s = f"<b>{mag:0.2f}</b>" if type(mag) == float else f"<b>{mag}</b>"
         self.lb_magnitude.setText(s)
 
     def updateAlt(self, alt):
