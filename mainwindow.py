@@ -266,7 +266,6 @@ class TypeFilter(QWidget):
         self.setLayout(layout)
 
 
-
 if __name__ == "__main__":
 
     app = NightSkyApp([])
