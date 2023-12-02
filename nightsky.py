@@ -28,3 +28,6 @@ class NightSkyApp (QApplication):
         self.geographic = self.earth + Topos(lat, lon)
         self.wgs84 = wgs84.latlon(lat, lon)
 
+    def changeLocation(self, lat, long, elevation):
+        self.geographic = self.earth + Topos(lat, long, elevation_m=elevation)
+        self.wgs84 = wgs84.latlon(lat, long)

@@ -9,6 +9,8 @@ from database import DatabaseManager
 from object_widgets import MessierObjectCard, ObjectSeparator
 from nightsky import NightSkyApp
 
+from Hello_Dialog.HelloDialog import HelloDialog
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -267,8 +269,17 @@ class TypeFilter(QWidget):
 
 if __name__ == "__main__":
 
-
     app = NightSkyApp([])
-    window = MainWindow()
-    window.show()
+    main_window = MainWindow()
+    main_window.show()
+    startup_dialog = HelloDialog()
+
+    def handleStartup(status):
+        if status:
+            lat, long, elev = startup_dialog.getLocation()
+            app.changeLocation(lat, long, elev)
+
+
+    startup_dialog.finished.connect(handleStartup)
+    startup_dialog.open()
     sys.exit(app.exec())
