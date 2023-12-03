@@ -4,7 +4,7 @@ import webbrowser
 import skyfield.api
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Slot
 
 from skyfield.api import load, load_file, wgs84, Topos
 from skyfield.magnitudelib import planetary_magnitude
@@ -28,7 +28,11 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         self.pb_likeButton.setChecked(favorited)
         self.pb_likeButton.clicked.connect(self.handleFavorite)
 
+
+
+    @Slot()
     def updatePosition(self):
+        print("received")
         pass
 
     def updateRA(self, angle):
@@ -66,6 +70,12 @@ class SatelliteItem(SearchItem):
         self.norad_id = norad_id
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
+        try:
+            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+        except AttributeError as e:
+            print(e)
+            print("Running in test mode?")
+
     def updatePosition(self):
         skyTime = QApplication.instance().skyTime
         wgs84Position = QApplication.instance().wgs84
@@ -97,7 +107,16 @@ class PlanetItem(SearchItem):
 
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
+        try:
+            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+        except AttributeError as e:
+            print(e)
+            print("Running in test mode?")
+
     def updatePosition(self):
+        if self.visibleRegion().isEmpty():
+            return
+
         skyTime = QApplication.instance().skyTime
         geographic = QApplication.instance().geographic
 
@@ -113,7 +132,7 @@ class PlanetItem(SearchItem):
         self.updateAz(altaz[1])
 
         try:
-            self.updateMag(planetary_magnitude(astrometric))
+            self.updateMag(float(planetary_magnitude(astrometric)))
         except ValueError:
             self.updateMag("Unknown")
 
@@ -134,7 +153,16 @@ class StarItem(SearchItem):
         self.hip = hip
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
+        try:
+            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+        except AttributeError as e:
+            print(e)
+            print("Running in test mode?")
+
     def updatePosition(self):
+        if self.visibleRegion().isEmpty():
+            return
+
         skyTime = QApplication.instance().skyTime
         geographic = QApplication.instance().geographic
 
@@ -165,7 +193,16 @@ class MessierItem(SearchItem):
         self.messier = messier.replace("M", "Messier_")
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
+        try:
+            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+        except AttributeError as e:
+            print(e)
+            print("Running in test mode?")
+
     def updatePosition(self):
+        if self.visibleRegion().isEmpty():
+            return
+
         skyTime = QApplication.instance().skyTime
         geographic = QApplication.instance().geographic
 
@@ -202,14 +239,14 @@ if __name__ == "__main__":
 
     planet = ephemeris["Mercury"]
 
-    # s = PlanetItem("Mercury", "The second planet from the sun", planet)
+    s = PlanetItem(0, False, "Mercury", "The second planet from the sun", planet)
     barnard = Star(ra_hours=(17, 57, 48.49803),
                    dec_degrees=(4, 41, 36.2072),
                    ra_mas_per_year=-798.71,
                    dec_mas_per_year=10337.77,
                    parallax_mas=545.4,
                    radial_km_per_s=-110.6)
-    # s = StarItem("Barnard's Star", "The star moving fastest across our sky.", barnard, 9.51, "87937")
+    # s = StarItem(0, True, "Barnard's Star", "The star moving fastest across our sky.", barnard, 9.51, "87937")
     pleiades = Star(ra_hours=(8, 40, 6),
                     dec_degrees=(24, 7, 12))
     # s = MessierItem("The Pleiades", "Messier 45, an open cluster of many blue stars.", pleiades, 1.6, 444, "M45")
@@ -220,7 +257,7 @@ if __name__ == "__main__":
     line2 = "2 25544  51.6413 224.7392 0001156 357.9062 186.2241 15.49998792427589"
     iss = EarthSatellite(line1, line2, 'ISS (ZARYA)', ts)
 
-    s = SatelliteItem('The ISS', "The International Space Station, the largest crewed spacecraft.", iss, "25544")
+    # s = SatelliteItem(0, True, 'The ISS', "The International Space Station, the largest crewed spacecraft.", iss, "25544")
 
     def handleTimer():
         app.skyTime = ts.now()

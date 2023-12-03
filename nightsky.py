@@ -35,7 +35,7 @@ class NightSkyApp (QApplication):
         self.updateTimer.start()
 
     def handleUpdateTimer(self):
-        print("Updated!")
+        self.skyTime = self.timescale.now()
 
     def changeLocation(self, lat, long, elevation):
         self.geographic = self.earth + Topos(lat, long, elevation_m=elevation)
