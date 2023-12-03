@@ -1,5 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
 
 from skyfield.api import load, load_file, wgs84
 from skyfield.toposlib import Topos
@@ -27,6 +28,14 @@ class NightSkyApp (QApplication):
         self.earth = self.ephemeris['Earth']
         self.geographic = self.earth + Topos(lat, lon)
         self.wgs84 = wgs84.latlon(lat, lon)
+
+        self.updateTimer = QTimer()
+        self.updateTimer.setInterval(1000) # Update every second
+        self.updateTimer.timeout.connect(self.handleUpdateTimer)
+        self.updateTimer.start()
+
+    def handleUpdateTimer(self):
+        print("Updated!")
 
     def changeLocation(self, lat, long, elevation):
         self.geographic = self.earth + Topos(lat, long, elevation_m=elevation)

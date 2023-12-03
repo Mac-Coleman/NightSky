@@ -11,6 +11,9 @@ class HelloDialog(QDialog, Ui_d_helloDialog):
     def getLocation(self):
         return self.w_locationGetter.location
 
+    def reject(self) -> None:
+        sys.exit()
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
