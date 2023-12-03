@@ -13,15 +13,20 @@ from skyfield.sgp4lib import EarthSatellite
 
 from Search_Item.UI.SearchItem import Ui_w_SearchItem
 
+from database import TableSelection
+
 
 class SearchItem(QWidget, Ui_w_SearchItem):
-    def __init__(self, title, desc, skyfield_object):
+    def __init__(self, pk, favorited, title, desc, skyfield_object):
         super().__init__()
         self.setupUi(self)
         self.lb_title.setText(f"<h1>{title}</h1>")
         self.lb_description.setText(desc)
 
         self.object = skyfield_object
+        self.pk = pk
+        self.pb_likeButton.setChecked(favorited)
+        self.pb_likeButton.clicked.connect(self.handleFavorite)
 
     def updatePosition(self):
         pass
@@ -50,9 +55,12 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         s = f"<b>{az}</b>"
         self.lb_azimuth.setText(s.replace("deg", "°"))
 
+    def handleFavorite(self, checked):
+        pass
+
 class SatelliteItem(SearchItem):
-    def __init__(self, title, desc, skyfield_object, norad_id):
-        super().__init__(title, desc, skyfield_object)
+    def __init__(self, pk, favorited, title, desc, skyfield_object, norad_id):
+        super().__init__(pk, favorited, title, desc, skyfield_object)
         self.lb_icon.setPixmap(QPixmap(u":/Icons/satellite-white"))
         self.lb_magnitude.setText("<b>Unknown</b>")
         self.norad_id = norad_id
@@ -78,9 +86,12 @@ class SatelliteItem(SearchItem):
     def handleInfo(self):
         webbrowser.open(f"https://www.n2yo.com/?s={self.norad_id}")
 
+    def handleFavorite(self, checked):
+        pass
+
 class PlanetItem(SearchItem):
-    def __init__(self, title, desc, skyfield_object):
-        super().__init__(title, desc, skyfield_object)
+    def __init__(self, pk, favorited, title, desc, skyfield_object):
+        super().__init__(pk, favorited, title, desc, skyfield_object)
         self.title = title
         self.lb_icon.setPixmap(QPixmap(u":/Icons/solar-system-white"))
 
@@ -111,10 +122,13 @@ class PlanetItem(SearchItem):
             self.title = "Mercury (planet)"
         webbrowser.open("https://en.wikipedia.org/wiki/" + self.title.replace(" ", "_"))
 
+    def handleFavorite(self, checked):
+        QApplication.instance().databaseManager.updateFavorite(self.pk, TableSelection.SOLAR_SYSTEM, checked)
+
 
 class StarItem(SearchItem):
-    def __init__(self, title, desc, skyfield_object, apparent_magnitude, hip):
-        super().__init__(title, desc, skyfield_object)
+    def __init__(self, pk, favorited, title, desc, skyfield_object, apparent_magnitude, hip):
+        super().__init__(pk, favorited, title, desc, skyfield_object)
         self.lb_icon.setPixmap(QPixmap(u":/Icons/star-white"))
         self.lb_magnitude.setText(f"<b>{apparent_magnitude:0.2f}</b>")
         self.hip = hip
@@ -138,9 +152,12 @@ class StarItem(SearchItem):
     def handleInfo(self):
         webbrowser.open(f"https://simbad.u-strasbg.fr/simbad/sim-basic?Ident=HIP{self.hip}&submit=SIMBAD+search")
 
+    def handleFavorite(self, checked):
+        QApplication.instance().databaseManager.updateFavorite(self.pk, TableSelection.STAR, checked)
+
 class MessierItem(SearchItem):
-    def __init__(self, title, desc, skyfield_object, apparent_magnitude, distance, messier):
-        super().__init__(title, desc, skyfield_object)
+    def __init__(self, pk, favorited, title, desc, skyfield_object, apparent_magnitude, distance, messier):
+        super().__init__(pk, favorited, title, desc, skyfield_object)
         self.lb_icon.setPixmap(QPixmap(u":/Icons/galaxy-white"))
         self.lb_magnitude.setText(f"<b>{apparent_magnitude:0.2f}</b>")
         self.updateDist(distance, 'ly')
@@ -164,6 +181,9 @@ class MessierItem(SearchItem):
 
     def handleInfo(self):
         webbrowser.open(f"https://en.wikipedia.org/wiki/{self.messier}")
+
+    def handleFavorite(self, checked):
+        QApplication.instance().databaseManager.updateFavorite(self.pk, TableSelection.MESSIER, checked)
 
 
 if __name__ == "__main__":

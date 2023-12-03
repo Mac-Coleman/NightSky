@@ -119,6 +119,7 @@ class ObjectList(QWidget):
 
         contents = QScrollArea()
         contents.setLayout(QHBoxLayout())
+        contents.setWidgetResizable(True)
 
         self.objectFilterer = ObjectFilterer()
 
@@ -126,10 +127,11 @@ class ObjectList(QWidget):
         layout.addWidget(contents)
 
         self.contentLayout = QVBoxLayout()
+        self.contentLayout.setContentsMargins(0, 0, 0, 0)
 
         contentsWidget = QWidget()
         # Make sure that it gets enough space for itself and all its contents
-        contentsWidget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
+        contentsWidget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Maximum)
         contentsWidget.setLayout(self.contentLayout)
         contents.setWidget(contentsWidget)
 
@@ -180,12 +182,25 @@ class ObjectList(QWidget):
         if not self.messierHidden:
             widgets += QApplication.instance().databaseManager.searchMessier(query, self.favoritesOnly)
 
-        for result in widgets:
+        if len(widgets) == 0:
+            l = QLabel("<i>No results found...\nTry another search!</i>")
+            l.setWordWrap(True)
+            l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            l.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+            widgets.append(l)
+        else:
+            l = QLabel("<i>End of results!<br>If you didn't find what you're looking for, try a more specific search.</i>")
+            l.setWordWrap(True)
+            l.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            widgets.append(l)
+
+        for index, result in enumerate(widgets):
             self.contentLayout.addWidget(result)
             result.setVisible(True)
-            sep = ObjectSeparator()
-            sep.setVisible(True)
-            self.contentLayout.addWidget(sep)
+            if index != len(widgets)-1:
+                sep = ObjectSeparator()
+                sep.setVisible(True)
+                self.contentLayout.addWidget(sep)
             self.contentLayout.parentWidget().adjustSize()
 
 

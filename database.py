@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QApplication
 
 from skyfield.api import Star
 
-from Search_Item.SearchItem import SatelliteItem, PlanetItem, StarItem, MessierItem
+
 
 from objects import MessierObject, SolarSystemObject
 
@@ -15,6 +15,8 @@ class TableSelection(Enum):
     SOLAR_SYSTEM = 2
     STAR = 3
     MESSIER = 4
+
+from Search_Item.SearchItem import SatelliteItem, PlanetItem, StarItem, MessierItem
 
 from object_widgets import ObjectCard
 
@@ -64,8 +66,8 @@ class DatabaseManager(object):
             terms_corrected
         )
 
-        def make_card(solarsystemObject):
-            i = PlanetItem(solarsystemObject[3], "Null", QApplication.instance().ephemeris[solarsystemObject[4]])
+        def make_card(solarsystem_object):
+            i = PlanetItem(solarsystem_object[0], solarsystem_object[1], solarsystem_object[3], "Null", QApplication.instance().ephemeris[solarsystem_object[4]])
             i.updatePosition()
             return i
         
@@ -92,7 +94,7 @@ class DatabaseManager(object):
         def make_card(star):
             # return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
             s = Star(ra_hours=star[3], dec_degrees=star[4], ra_mas_per_year=star[5], dec_mas_per_year=star[6], parallax_mas=star[7])
-            i = StarItem(star[10], f"A {star[9]} star", s, star[8], star[2])
+            i = StarItem(star[0], star[1], star[10], f"A {star[9]} star", s, star[8], star[2])
             i.updatePosition()
             return i
         
@@ -114,7 +116,7 @@ class DatabaseManager(object):
 
         def make_card(messier_object):
             s = Star(ra_hours=messier_object[6], dec_degrees=messier_object[7])
-            i = MessierItem(messier_object[3], messier_object[4], s, messier_object[5], messier_object[11], messier_object[2])
+            i = MessierItem(messier_object[0], messier_object[1], messier_object[3], messier_object[4], s, messier_object[5], messier_object[11], messier_object[2])
             i.updatePosition()
             return i
 
