@@ -9,6 +9,9 @@ class StarScene(QGraphicsScene):
     The point of this class is not to provide a picture-perfect representation of the night sky, but one that is
     good enough for hobbyist use in real time.
 
+    Steps:
+    RA/DEC -> local ALT/AZ -> stereographic projection with antipode of central ALT/AZ as pole.
+
     Cheats/Optimizations:
      - Display only those stars with magnitudes less than 6.0-6.5. (Somewhere between 4992 and 8785 stars)
      - Avoid using Skyfield operations on stars.
@@ -38,8 +41,17 @@ class StarScene(QGraphicsScene):
 
         self._dragging = False
 
+        QApplication.instance().updateTimer.timeout.connect(self.updateGraphicsItems)
+
+    def updateGraphicsItems(self):
+        print("graphics")
+
     def setDragging(self, dragging):
         self._dragging = dragging
+        if dragging:
+            QApplication.instance().setOverrideCursor(Qt.CursorShape.ClosedHandCursor)
+        else:
+            QApplication.instance().restoreOverrideCursor()
 
     def dragging(self):
         return self._dragging
@@ -62,6 +74,7 @@ class StarScene(QGraphicsScene):
 
         self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
         # self._centerAzimuth %= 360.0
+        self._centerAzimuth = max(0.0, min(self._centerAzimuth, 360.0))
 
         self.views()[0].centerOn(-self._centerAzimuth * 10, self._centerAltitude * 10)
 

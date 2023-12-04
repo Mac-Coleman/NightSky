@@ -18,6 +18,8 @@ class StarView(QGraphicsView):
         self.scene = StarScene(self)
         self.setScene(self.scene)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
 
 
