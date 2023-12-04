@@ -10,27 +10,19 @@ from object_widgets import MessierObjectCard, ObjectSeparator
 from nightsky import NightSkyApp
 
 from Hello_Dialog.HelloDialog import HelloDialog
+from Star_View.StarView import StarView
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("Night Skies")
+        self.setWindowTitle("NightSky")
         self.setMinimumSize(1000, 500)
 
 
         splitter = QSplitter()
-        graphics = QGraphicsView()
-        scene = QGraphicsScene(-1.0, -1.0, 2.0, 2.0)
-        l = scene.addText("Stars go here", QFont("SansSerif", pointSize=25))
-        l.setPos(-100, -25)
-
-        for i in range(1, 256):
-            a = scene.addText(random.choice("*-.'`"))
-            a.setPos((random.random()-0.5) * 625, (random.random()-0.5) * 500)
-
-        graphics.setScene(scene)
+        graphics = StarView()
 
         splitter.addWidget(graphics)
 

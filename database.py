@@ -57,8 +57,8 @@ class DatabaseManager(object):
 
         if favorited:
             sql += " AND favorited = TRUE"
-
-        sql += " LIMIT 10"
+        else:
+            sql += " LIMIT 10"
 
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(
@@ -81,8 +81,8 @@ class DatabaseManager(object):
 
         if favorited:
             sql += " AND favorited = TRUE"
-
-        sql += " LIMIT 10"
+        else:
+            sql += " LIMIT 10"
 
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(
@@ -105,8 +105,8 @@ class DatabaseManager(object):
 
         if favorited:
             sql += " AND favorited = TRUE"
-
-        sql += " LIMIT 10"
+        else:
+            sql += " LIMIT 10"
 
         terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
         rows = self.cursor.execute(
@@ -149,6 +149,12 @@ class DatabaseManager(object):
         )
 
         self.connection.commit()
+
+    def getBrightStars(self):
+        sql = 'SELECT pk, ra, dec, ap_mag FROM hipparcos_objects WHERE ap_mag < 6.0'
+        rows = self.cursor.execute(sql)
+        return list(rows)
+
 
 
 

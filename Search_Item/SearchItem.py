@@ -71,7 +71,7 @@ class SatelliteItem(SearchItem):
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
         try:
-            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+            QApplication.instance().updateTimer.timeout.connect(self.updatePosition)
         except AttributeError as e:
             print(e)
             print("Running in test mode?")
@@ -108,7 +108,7 @@ class PlanetItem(SearchItem):
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
         try:
-            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+            QApplication.instance().updateTimer.timeout.connect(self.updatePosition)
         except AttributeError as e:
             print(e)
             print("Running in test mode?")
@@ -154,7 +154,7 @@ class StarItem(SearchItem):
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
         try:
-            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+            QApplication.instance().updateTimer.timeout.connect(self.updatePosition)
         except AttributeError as e:
             print(e)
             print("Running in test mode?")
@@ -194,7 +194,7 @@ class MessierItem(SearchItem):
         self.pb_infoButton.clicked.connect(self.handleInfo)
 
         try:
-            print(QApplication.instance().updateTimer.timeout.connect(self.updatePosition))
+            QApplication.instance().updateTimer.timeout.connect(self.updatePosition)
         except AttributeError as e:
             print(e)
             print("Running in test mode?")
