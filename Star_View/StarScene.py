@@ -1,4 +1,6 @@
 from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent
+from PySide6.QtGui import QPen, QBrush
+from PySide6.QtCore import Qt
 
 class StarScene(QGraphicsScene):
     """
@@ -25,8 +27,14 @@ class StarScene(QGraphicsScene):
         self._centerAltitude = 0.0
         self._centerAzimuth = 0.0
 
-        self._stars = QApplication.instance().databaseManager.getBrightStars()
-        print(self._stars)
+        stars = QApplication.instance().databaseManager.getBrightStars()
+
+        pen = QPen(Qt.black, 1, Qt.DashDotLine, Qt.RoundCap, Qt.RoundJoin)
+        brush = QBrush(Qt.white)
+
+        for star in stars:
+            size = (0.5 + 6 - star[3]) ** 1.4
+            self.addEllipse(-star[1] * 10, -star[2] * 10, size, size, pen, brush)
 
         self._dragging = False
 
