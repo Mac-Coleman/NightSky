@@ -57,10 +57,12 @@ class StarScene(QGraphicsScene):
             return
         diff = event.lastScreenPos() - event.screenPos()
 
-        self._centerAltitude -= diff.y() * 0.1
-        self._centerAzimuth += diff.x() * 0.1
+        self._centerAltitude += diff.y() * 0.1
+        self._centerAzimuth -= diff.x() * 0.1
 
         self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
-        self._centerAzimuth %= 360.0
+        # self._centerAzimuth %= 360.0
 
-        # print(self._centerAltitude, self._centerAzimuth)
+        self.views()[0].centerOn(-self._centerAzimuth * 10, self._centerAltitude * 10)
+
+        print(self._centerAltitude, self._centerAzimuth)
