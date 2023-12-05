@@ -4,6 +4,8 @@ from PySide6.QtCore import Qt
 
 from Star_View.StarItem import StarItem
 
+from Utils.utils import get_pole
+
 class StarScene(QGraphicsScene):
     """
     The scene used by StarView.
@@ -32,13 +34,14 @@ class StarScene(QGraphicsScene):
         self._centerAltitude = 0.0
         self._centerAzimuth = 0.0
 
+        self.poleAltitude, self.poleAzimuth = get_pole(self._centerAltitude, self._centerAzimuth)
+
         stars = QApplication.instance().databaseManager.getBrightStars()
 
         pen = QPen(Qt.black, 1, Qt.DashDotLine, Qt.RoundCap, Qt.RoundJoin)
-        brush = QBrush(Qt.white)
+        brush = QBrush(Qt.GlobalColor.red)
 
-        self.addEllipse(-1, -1, 2, 2, pen, brush)
-        self.addEllipse(300, -1, 2, 2, pen, brush)
+        self.addEllipse(-5, -5, 10, 10, pen, brush)
 
         for star in stars:
             star_item = StarItem(star[0], star[1], star[2], star[3])
@@ -72,13 +75,13 @@ class StarScene(QGraphicsScene):
             return
         diff = event.lastScreenPos() - event.screenPos()
 
-        self._centerAltitude += diff.y() * 0.1
-        self._centerAzimuth -= diff.x() * 0.1
+        self._centerAltitude -= diff.y() #* 0.1 # Dragging up should decrease altitude
+        self._centerAzimuth += diff.x() #* 0.1 # Dragging right should decrease azimuth
 
-        self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
+        # self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
         # self._centerAzimuth %= 360.0
-        self._centerAzimuth = max(-360.0 * 2.5, min(self._centerAzimuth, 0))
+        # self._centerAzimuth = max(-360.0 * 2.5, min(self._centerAzimuth, 0))
 
-        self.views()[0].centerOn(-self._centerAzimuth, self._centerAltitude)
+        self.views()[0].centerOn(self._centerAzimuth, -self._centerAltitude)
 
         print(self._centerAltitude, self._centerAzimuth)

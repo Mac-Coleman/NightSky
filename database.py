@@ -151,14 +151,14 @@ class DatabaseManager(object):
         self.connection.commit()
 
     def getBrightStars(self):
-        sql = 'SELECT pk, ra, dec, ap_mag FROM hipparcos_objects WHERE ap_mag < 6.0'
+        sql = 'SELECT pk, ra, dec, ap_mag FROM hipparcos_objects WHERE ap_mag < 5.0'
         rows = self.cursor.execute(sql)
         return list(rows)
         # test
         # s = []
         # for i in range (0, 360, 10):
         #     for j in range(-90, 90, 10):
-        #         s.append([i * 180 + j, i, j, 3])
+        #         s.append([i * 180 + j, i, j, 5])
         # return s
 
 
