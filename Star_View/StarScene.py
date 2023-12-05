@@ -2,6 +2,8 @@ from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseE
 from PySide6.QtGui import QPen, QBrush
 from PySide6.QtCore import Qt
 
+from Star_View.StarItem import StarItem
+
 class StarScene(QGraphicsScene):
     """
     The scene used by StarView.
@@ -36,8 +38,8 @@ class StarScene(QGraphicsScene):
         brush = QBrush(Qt.white)
 
         for star in stars:
-            size = (0.5 + 6 - star[3]) ** 1.4
-            self.addEllipse(-star[1] * 10, -star[2] * 10, size, size, pen, brush)
+            star_item = StarItem(star[0], -star[1] * 10, -star[2] * 10, star[3])
+            self.addItem(star_item)
 
         self._dragging = False
 
