@@ -37,8 +37,11 @@ class StarScene(QGraphicsScene):
         pen = QPen(Qt.black, 1, Qt.DashDotLine, Qt.RoundCap, Qt.RoundJoin)
         brush = QBrush(Qt.white)
 
+        self.addEllipse(-1, -1, 2, 2, pen, brush)
+        self.addEllipse(300, -1, 2, 2, pen, brush)
+
         for star in stars:
-            star_item = StarItem(star[0], -star[1] * 10, -star[2] * 10, star[3])
+            star_item = StarItem(star[0], star[1], star[2], star[3])
             self.addItem(star_item)
 
         self._dragging = False
@@ -60,11 +63,9 @@ class StarScene(QGraphicsScene):
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         self.setDragging(True)
-        print("Drag entered")
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         self.setDragging(False)
-        print("Drag left")
 
     def mouseMoveEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         if not self._dragging:
@@ -76,8 +77,8 @@ class StarScene(QGraphicsScene):
 
         self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
         # self._centerAzimuth %= 360.0
-        self._centerAzimuth = max(0.0, min(self._centerAzimuth, 360.0))
+        self._centerAzimuth = max(-360.0 * 2.5, min(self._centerAzimuth, 0))
 
-        self.views()[0].centerOn(-self._centerAzimuth * 10, self._centerAltitude * 10)
+        self.views()[0].centerOn(-self._centerAzimuth, self._centerAltitude)
 
         print(self._centerAltitude, self._centerAzimuth)

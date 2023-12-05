@@ -21,6 +21,8 @@ class StarView(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
+        # QApplication.instance().updateTimer.timeout.connect(self.viewport().repaint)
+
 
 
 
