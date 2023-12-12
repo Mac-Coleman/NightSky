@@ -11,6 +11,7 @@ from nightsky import NightSkyApp
 
 from Hello_Dialog.HelloDialog import HelloDialog
 from Star_View.StarView import StarView
+from Satellite_Manager.SatelliteManager import SatelliteManager
 
 
 class MainWindow(QMainWindow):
@@ -32,6 +33,7 @@ class MainWindow(QMainWindow):
         tabs.addTab(NotificationTab(), "Notifications")
         tabs.addTab(NotificationTab(), "All Events")
         tabs.addTab(ObjectTab(), "Objects")
+        tabs.addTab(SatelliteManager(), "Manage Satellites")
         tabs.addTab(QPushButton("What on earth"), "Settings")
 
         splitter.addWidget(tabs)

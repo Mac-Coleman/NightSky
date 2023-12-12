@@ -30,6 +30,7 @@ class StarScene(QGraphicsScene):
     """
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setSceneRect(-100, 100, 200, 200)
 
         self._centerAltitude = 0.0
         self._centerAzimuth = 0.0
@@ -49,10 +50,7 @@ class StarScene(QGraphicsScene):
 
         self._dragging = False
 
-        QApplication.instance().updateTimer.timeout.connect(self.updateGraphicsItems)
-
-    def updateGraphicsItems(self):
-        print("graphics")
+        # QApplication.instance().updateTimer.timeout.connect(self.advance)
 
     def setDragging(self, dragging):
         self._dragging = dragging
@@ -82,6 +80,6 @@ class StarScene(QGraphicsScene):
         # self._centerAzimuth %= 360.0
         # self._centerAzimuth = max(-360.0 * 2.5, min(self._centerAzimuth, 0))
 
-        self.views()[0].centerOn(self._centerAzimuth, -self._centerAltitude)
+        # self.views()[0].centerOn(self._centerAzimuth, -self._centerAltitude)
 
         print(self._centerAltitude, self._centerAzimuth)

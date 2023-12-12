@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="Icons">
+    <file alias="trash-can">trash-can.svg</file>
+    <file alias="add-satellite">add_sattelite.svg</file>
     <file alias="pin">position-marker.svg</file>
     <file alias="like-star-checked-white">round-star.svg</file>
     <file alias="info-white">info.svg</file>
