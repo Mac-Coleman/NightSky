@@ -28,6 +28,7 @@ base_satellites = [
     ("ISS Tool Bag", "Toolbag lost while on a spacewalk.", 58229),
     ("Tiangong Space Station", "Space station operated by China, launched in 2021.", 48274),
     ("Hubble Space Telescope", "Space telescope operated by NASA.", 20580),
+    ("Mir Space Station", "Russian space station deorbited in 2001.", 16609),
     ("Starlink-46", "Deorbited in 2020.", 44246)
 ]
 

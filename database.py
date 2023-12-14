@@ -1,6 +1,8 @@
 # This Python file uses the following encoding: utf-8
 from enum import Enum
 import sqlite3
+import time
+import math
 
 from PySide6.QtWidgets import QApplication
 
@@ -19,6 +21,7 @@ class TableSelection(Enum):
 from Search_Item.SearchItem import SatelliteItem, PlanetItem, StarItem, MessierItem
 
 from object_widgets import ObjectCard
+from Utils.utils import get_satellite_tle
 
 class DatabaseManager(object):
     def __new__(cls):
@@ -184,6 +187,98 @@ class DatabaseManager(object):
         #     for j in range(-90, 90, 10):
         #         s.append([i * 180 + j, i, j, 5])
         # return s
+
+    def getAllSatellites(self):
+        sql = 'SELECT * FROM satellite_objects'
+        rows = self.cursor.execute(sql)
+        return list(rows)
+
+    def addSatellite(self, name, desc, id):
+        sql = "INSERT INTO satellite_objects (favorited, norad_id, name, desc, tle, refresh_time, decayed, search_text)" \
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+
+        try:
+            _, _, _, tle = get_satellite_tle(id)
+        except ConnectionError:
+            raise ValueError(f"{id} could not be retrieved.")
+        except ValueError:
+            raise ValueError(f"{id} could not be retrieved.")
+        except IndexError:
+            raise ValueError(f"{id} could not be retrieved.")
+
+        data = (0, id, name, desc, tle, int(time.time()), False, ' '.join([name.lower(), desc.lower(), id]))
+
+        self.cursor.execute(sql, data)
+        self.connection.commit()
+
+    def refreshOutOfDate(self):
+        fetch = "SELECT pk, norad_id FROM satellite_objects WHERE refresh_time < ?"
+        data = (int(time.time()) - 60*60*24*2,)  # The comma is needed to recognize it as a tuple.
+
+        rows = list(self.cursor.execute(fetch, data))
+
+        for sat in rows:
+            try:
+                _, _, _, tle = get_satellite_tle(sat[1])
+            except ConnectionError:
+                raise ValueError(f"{id} could not be retrieved.")
+            except ValueError:
+                raise ValueError(f"{id} could not be retrieved.")
+            except IndexError:
+                raise ValueError(f"{id} could not be retrieved.")
+
+            update = "UPDATE satellite_objects SET tle = ?, refresh_time = ? WHERE pk IS ?"
+            data = (tle, int(time.time()), sat[0])
+
+            self.cursor.execute(update, data)
+
+        self.connection.commit()
+
+    def refreshAll(self):
+        fetch = "SELECT pk, norad_id FROM satellite_objects"
+
+        rows = list(self.cursor.execute(fetch))
+
+        for sat in rows:
+            try:
+                _, _, _, tle = get_satellite_tle(sat[1])
+            except ConnectionError:
+                continue
+            except ValueError:
+                continue
+            except IndexError:
+                continue
+
+            update = "UPDATE satellite_objects SET tle = ?, refresh_time = ? WHERE pk IS ?"
+            data = (tle, int(time.time()), sat[0])
+
+            self.cursor.execute(update, data)
+
+        self.connection.commit()
+
+    def deleteSatellite(self, pk):
+        delete = "DELETE FROM satellite_objects WHERE pk = ?"
+        data = (pk,)
+
+        self.cursor.execute(delete, data)
+        self.connection.commit()
+
+    def deleteDecayed(self):
+        fetch = "SELECT * FROM satellite_objects"
+        rows = list(self.cursor.execute(fetch))
+
+        for sat in rows:
+            print("Decayed:", sat[7], "TLE:", sat[5])
+            if sat[7] == 1 or sat[5] == "":
+                self.deleteSatellite(sat[0])
+                continue
+
+            line0, line1, line2, *_ = sat[5].split("\n")
+            s = EarthSatellite(line1, line2, line0, QApplication.instance().timescale)
+            geocentric = s.at(QApplication.instance().skyTime)
+            if math.isnan(geocentric.position.km[0]):
+                self.deleteSatellite(sat[0])
+
 
 
 
