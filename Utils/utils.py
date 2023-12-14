@@ -1,4 +1,5 @@
 import math
+import requests
 
 
 def ra_dec_to_alt_az(ra_deg, dec_deg, lat_deg, long_deg, t):
@@ -8,7 +9,7 @@ def ra_dec_to_alt_az(ra_deg, dec_deg, lat_deg, long_deg, t):
     long = long_deg * math.pi/180
 
     # All angles in radians
-    gmst = t.gmst
+    gmst = t.gmst * 120
     local_sidereal_time = js_modulo(gmst + long, 2 * math.pi)
 
     h = local_sidereal_time - ra
@@ -75,3 +76,13 @@ def spherical_to_stereographic(phi, theta):
 
 def polar_to_cartesian(r, theta):
     return r * math.cos(theta), r*math.sin(theta)
+
+def get_satellite_tle(norad_id):
+    url = f"https://celestrak.org/NORAD/elements/gp.php?CATNR={norad_id}&FORMAT=TLE"
+    r = requests.get(url)
+    data = r.text.split("\n")
+    return data[0], data[1], data[2], r.text
+
+if __name__ == "__main__":
+    _, _, _, tle = get_satellite_tle(25544)
+    print(tle)

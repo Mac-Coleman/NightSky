@@ -10,6 +10,7 @@ from skyfield.api import load, load_file, wgs84, Topos
 from skyfield.magnitudelib import planetary_magnitude
 from skyfield.starlib import Star
 from skyfield.sgp4lib import EarthSatellite
+from skyfield.units import Angle
 
 from Search_Item.UI.SearchItem import Ui_w_SearchItem
 
@@ -40,7 +41,9 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         self.lb_rightAscension.setText(s)
 
     def updateDEC(self, angle):
-        s = f"<b>{angle.dstr()}</b>"
+        s = angle
+        if type(angle) is Angle:
+            s = f"<b>{angle.dstr()}</b>"
         self.lb_declination.setText(s.replace("deg", "°"))
 
     def updateDist(self, dist, unit):
@@ -77,18 +80,26 @@ class SatelliteItem(SearchItem):
             print("Running in test mode?")
 
     def updatePosition(self):
-        skyTime = QApplication.instance().skyTime
-        wgs84Position = QApplication.instance().wgs84
+        radec = ["unknown", "unknown", 0.00]
+        altaz = ["unknown", "unknown"]
 
-        difference = self.object - wgs84Position
-        topocentric = difference.at(skyTime)
+        if self.object is not None:
+            skyTime = QApplication.instance().skyTime
+            wgs84Position = QApplication.instance().wgs84
 
-        radec = topocentric.radec()
-        altaz = topocentric.altaz()
+            difference = self.object - wgs84Position
+            topocentric = difference.at(skyTime)
+
+            radec = topocentric.radec()
+            altaz = topocentric.altaz()
 
         self.updateRA(radec[0])
         self.updateDEC(radec[1])
-        self.updateDist(radec[2].km, "km")
+
+        if type(radec[2]) is float:
+            self.updateDist(radec[2], "")
+        else:
+            self.updateDist(radec[2].km, "km")
 
         self.updateAlt(altaz[0])
         self.updateAz(altaz[1])
@@ -97,7 +108,7 @@ class SatelliteItem(SearchItem):
         webbrowser.open(f"https://www.n2yo.com/?s={self.norad_id}")
 
     def handleFavorite(self, checked):
-        pass
+        QApplication.instance().databaseManager.updateFavorite(self.pk, TableSelection.SATELLITE, checked)
 
 class PlanetItem(SearchItem):
     def __init__(self, pk, favorited, title, desc, skyfield_object):
@@ -239,7 +250,7 @@ if __name__ == "__main__":
 
     planet = ephemeris["Mercury"]
 
-    s = PlanetItem(0, False, "Mercury", "The second planet from the sun", planet)
+    # s = PlanetItem(0, False, "Mercury", "The second planet from the sun", planet)
     barnard = Star(ra_hours=(17, 57, 48.49803),
                    dec_degrees=(4, 41, 36.2072),
                    ra_mas_per_year=-798.71,
@@ -253,11 +264,13 @@ if __name__ == "__main__":
 
     # This TLE might be outdated by the time you're testing this... I'm just using this one for testing.
     # Last Retrieved from Celestrak on 11/29/2023
-    line1 = "1 25544U 98067A   23334.51085929  .00035707  00000+0  63084-3 0  9999"
-    line2 = "2 25544  51.6413 224.7392 0001156 357.9062 186.2241 15.49998792427589"
-    iss = EarthSatellite(line1, line2, 'ISS (ZARYA)', ts)
+    line0 = "ISS (ZARYA)"
+    line1 = "1 25544U 98067A   23347.97546825  .00010243  00000+0  18476-3 0  9993"
+    line2 = "2 25544  51.6397 158.0105 0001827  32.3380 104.5191 15.50377164429678"
+    iss = EarthSatellite(line1, line2, line0, ts)
+    print(iss)
 
-    # s = SatelliteItem(0, True, 'The ISS', "The International Space Station, the largest crewed spacecraft.", iss, "25544")
+    s = SatelliteItem(0, True, 'The ISS', "The International Space Station, the largest crewed spacecraft.", iss, "25544")
 
     def handleTimer():
         app.skyTime = ts.now()

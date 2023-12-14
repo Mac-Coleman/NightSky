@@ -165,7 +165,7 @@ class ObjectList(QWidget):
         widgets = []
         
         if not self.satellitesHidden:
-            QApplication.instance().databaseManager.searchSatellites(query, self.favoritesOnly)
+            widgets += QApplication.instance().databaseManager.searchSatellites(query, self.favoritesOnly)
 
         if not self.solarSystemHidden:
             widgets += QApplication.instance().databaseManager.searchSolarSystem(query, self.favoritesOnly)

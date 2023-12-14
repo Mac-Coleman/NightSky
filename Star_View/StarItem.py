@@ -39,5 +39,5 @@ class StarItem(QGraphicsEllipseItem):
         x, y = self.updateCoords(self.scene().poleAltitude, self.scene().poleAzimuth)
 
         # print(self.pos(), end=' ')
-        self.setPos(x, y)  # -x - self.size/2, -y - self.size/2)
+        self.setRect(x * -1000, y * -1000, self.size, self.size)  # -x - self.size/2, -y - self.size/2)
         # print(self.pos())

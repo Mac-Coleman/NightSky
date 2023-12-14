@@ -4,7 +4,7 @@ import sqlite3
 
 from PySide6.QtWidgets import QApplication
 
-from skyfield.api import Star
+from skyfield.api import Star, EarthSatellite
 
 
 
@@ -73,8 +73,32 @@ class DatabaseManager(object):
         
         return map(make_card, rows)
 
-    def searchSatellites(self, term: str, favorited: bool) -> list[ObjectCard]:
-        pass
+    def searchSatellites(self, term: str, favorited: bool) -> list[SatelliteItem]:
+        sql = "SELECT * FROM satellite_objects WHERE search_text LIKE ?"
+
+        if favorited:
+            sql += " AND favorited = TRUE"
+        else:
+            sql += " LIMIT 10"
+
+        terms_corrected = ('%' + '%'.join(term.split(' ')) + '%',)
+        rows = self.cursor.execute(
+            sql,
+            terms_corrected
+        )
+
+        def make_card(satellite):
+            # return ObjectCard(star[10], star[0], star[1], TableSelection.STAR)
+            s = None
+            if satellite[5] != "":
+                line0, line1, line2, *_ = satellite[5].split("\n")
+                s = EarthSatellite(line1, line2, line0, QApplication.instance().timescale)
+
+            i = SatelliteItem(satellite[0], satellite[1], satellite[3], satellite[4], s, satellite[2])
+            i.updatePosition()
+            return i
+
+        return list(map(make_card, rows))
 
     def searchStars(self, term: str, favorited: bool) -> list[ObjectCard]:
         sql = "SELECT * FROM hipparcos_objects WHERE search_text LIKE ?"
@@ -128,7 +152,7 @@ class DatabaseManager(object):
 
         match table:
             case TableSelection.SATELLITE:
-                table_name = 'satellites'
+                table_name = 'satellite_objects'
             case TableSelection.SOLAR_SYSTEM:
                 table_name = "solarsystem_objects"
             case TableSelection.STAR:

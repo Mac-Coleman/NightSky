@@ -22,7 +22,7 @@ class StarView(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
-        QApplication.instance().updateTimer.timeout.connect(self.centerOn(0, 0))
+        # QApplication.instance().updateTimer.timeout.connect(self.scene.advance)
 
 
 

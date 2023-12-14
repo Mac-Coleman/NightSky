@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QHeaderView
 
 from Satellite_Manager.UI.SatelliteManager import Ui_w_satelliteManager
 
@@ -17,14 +17,16 @@ class SatelliteManager(QWidget, Ui_w_satelliteManager):
         self.pb_removeDecayed.clicked.connect(self.removeDecayed)
         self.pb_removeSelected.clicked.connect(self.removeSelected)
 
-        self.lw_list.selectionChanged.connect(self.selectionChanged)
+        self.tw_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+
+        self.tw_table.itemSelectionChanged.connect(self.selectionChanged)
 
     def addSatellite(self):
         d = SatelliteDialog()
         d.exec()
 
     def clearSelected(self):
-        self.lw_list.clearSelection()
+        self.tw_table.clearSelection()
 
     def refreshAll(self):
         pass
@@ -38,8 +40,8 @@ class SatelliteManager(QWidget, Ui_w_satelliteManager):
     def removeSelected(self):
         pass
 
-    def selectionChangeD(self):
-        if len(self.lw_list.selectedItems()) > 0:
+    def selectionChanged(self):
+        if len(self.tw_table.selectedItems()) > 0:
             self.pb_clear.setEnabled(True)
             self.pb_removeSelected.setEnabled(True)
         else:
