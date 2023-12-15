@@ -194,6 +194,11 @@ class DatabaseManager(object):
         rows = self.cursor.execute(sql)
         return list(rows)
 
+    def getFavoriteSatellites(self):
+        sql = 'SELECT * FROM satellite_objects WHERE favorited IS TRUE AND tle != "" AND decayed IS FALSE'
+        rows = list(self.cursor.execute(sql))
+        return rows
+
     def addSatellite(self, name, desc, id):
         sql = "INSERT INTO satellite_objects (favorited, norad_id, name, desc, tle, refresh_time, decayed, search_text)" \
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"

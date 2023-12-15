@@ -12,12 +12,19 @@ class SatelliteItem(QGraphicsPixmapItem):
     def __init__(self, pk, sat, name, parent=None):
         super().__init__(parent)
         self.pk = pk
+        self.sat = sat
         self.setToolTip(name)
 
         self.setPixmap(QPixmap(':/Icons/satellite-white').scaled(64, 64, Qt.AspectRatioMode.KeepAspectRatio))
 
         self.altitude = 0
         self.azimuth = 0
+
+    def updateAltAz(self):
+        wgs84 = QApplication.instance().wgs84
+        t = QApplication.instance().skyTime
+        alt, az, _ = (self.sat - wgs84).at(t).altaz()
+        self.altitude, self.azimuth = alt.degrees, az.degrees
 
     def updateCoords(self, poleAlt, poleAz):
 
@@ -35,6 +42,6 @@ class SatelliteItem(QGraphicsPixmapItem):
         x, y = self.updateCoords(self.scene().poleAltitude, self.scene().poleAzimuth)
 
         # print(self.pos(), end=' ')
-        self.setPos(x * -self.scene().scale + 32, y * -self.scene().scale + 32)
+        self.setPos(x * -self.scene().scale - 32, y * -self.scene().scale - 32)
         # self.setRect(x * -self.scene().scale, y * -self.scene().scale, 64, 64)  # -x - self.size/2, -y - self.size/2)
         # print(self.pos())

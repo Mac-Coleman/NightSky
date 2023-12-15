@@ -2,9 +2,10 @@ from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseE
 from PySide6.QtGui import QPen, QBrush, QTransform
 from PySide6.QtCore import Qt
 
+from skyfield.api import EarthSatellite
+
 from Star_View.StarItem import StarItem
 from Star_View.SatelliteItem import SatelliteItem
-
 from Utils.utils import get_pole
 
 class StarScene(QGraphicsScene):
@@ -47,9 +48,17 @@ class StarScene(QGraphicsScene):
             star_item = StarItem(star[0], star[1], star[2], star[3], star[4])
             self.addItem(star_item)
 
+        satellites = QApplication.instance().databaseManager.getFavoriteSatellites()
+
+        for sat in satellites:
+            line0, line1, line2, *_ = sat[5].split("\n")
+            es = EarthSatellite(line1, line2)
+            sat_item = SatelliteItem(sat[0], es, sat[3])
+            self.addItem(sat_item)
+
         self.addEllipse(-5, -5, 10, 10, pen, brush)
 
-        self.addItem(SatelliteItem(0, 0, "Test Satellite"))
+        # self.addItem(SatelliteItem(0, 0, "Test Satellite"))
 
         self._dragging = False
         self.scale = 1000
@@ -63,6 +72,11 @@ class StarScene(QGraphicsScene):
         for item in self.items():
             if type(item) is StarItem:
                 item.updateAltAz()
+                continue
+
+            if type(item) is SatelliteItem:
+                item.updateAltAz()
+                continue
 
         self.advance()
 
