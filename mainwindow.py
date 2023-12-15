@@ -13,6 +13,7 @@ from Hello_Dialog.HelloDialog import HelloDialog
 from Star_View.StarView import StarView
 from Satellite_Manager.SatelliteManager import SatelliteManager
 from Predictions_Panel.PredictionsPanel import PredictionsPanel
+from Settings_Menu.SettingsMenu import SettingsMenu
 
 
 class MainWindow(QMainWindow):
@@ -34,7 +35,7 @@ class MainWindow(QMainWindow):
         tabs.addTab(PredictionsPanel(), "Culminations")
         tabs.addTab(ObjectTab(), "Objects")
         tabs.addTab(SatelliteManager(), "Manage Satellites")
-        tabs.addTab(QPushButton("What on earth"), "Settings")
+        tabs.addTab(SettingsMenu(), "Settings")
 
         splitter.addWidget(tabs)
 

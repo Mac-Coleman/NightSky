@@ -57,6 +57,9 @@ class StarScene(QGraphicsScene):
 
         self.addEllipse(-5, -5, 10, 10, pen, brush)
 
+        self.label = self.addSimpleText("Placeholder", "sans-serif")
+        self.label.setBrush(QBrush(Qt.GlobalColor.white))
+
         # self.addItem(SatelliteItem(0, 0, "Test Satellite"))
 
         self._dragging = False
@@ -67,6 +70,15 @@ class StarScene(QGraphicsScene):
         QApplication.instance().updateTimer.timeout.connect(self.updateItemCoordinates)
         QApplication.instance().lookAtInViewport.connect(self.lookAt)
         QApplication.instance().databaseUpdated.connect(self.setupSatellites)
+
+    def advance(self) -> None:
+        super().advance()
+        self.label.setText(f"AltAz: {self._centerAltitude:.2f}, {self._centerAzimuth:.2f}")
+
+        if len(self.views()) > 0:
+            x = -self.views()[0].width()/2 + 10
+            y = self.views()[0].height()/2 - 32
+            self.label.setPos(x, y)
 
     def lookAt(self, alt, az):
         if math.isnan(alt) or math.isnan(az):

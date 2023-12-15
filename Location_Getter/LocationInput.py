@@ -17,6 +17,8 @@ class LocationInput(QWidget, Ui_w_LocationInput):
 
         self.pb_automatic.clicked.connect(self.geocoder)
 
+        self.location = (0.0, 0.0, 0.0)
+
     def updateLocationRaw(self):
         self.location = (
             float(self.db_latitude.value()),
