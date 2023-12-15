@@ -21,14 +21,16 @@ class StarItem(QGraphicsEllipseItem):
         self.setToolTip(name)
 
         self.setRect(ra*10 - self.size/2, dec*10 - self.size/2, self.size, self.size)
-        # self.updateCoords(0, 180)
+        self.updateAltAz()
+
+    def updateAltAz(self):
+        t = QApplication.instance().skyTime
+        self.azimuth, self.altitude, _, _ = ra_dec_to_alt_az(self.ra, self.dec, QApplication.instance().wgs84.latitude.degrees, QApplication.instance().wgs84.longitude.degrees, t)
 
     def updateCoords(self, poleAlt, poleAz):
-        t = QApplication.instance().skyTime
-        az, a, lst, h = ra_dec_to_alt_az(self.ra, self.dec, QApplication.instance().wgs84.latitude.degrees, QApplication.instance().wgs84.longitude.degrees, t)
 
-        phi = zenith_angle_to_pole(poleAlt, poleAz, a, az)
-        theta = azimuth_angle_to_pole(poleAlt, poleAz, a, az)
+        phi = zenith_angle_to_pole(poleAlt, poleAz, self.altitude, self.azimuth)
+        theta = azimuth_angle_to_pole(poleAlt, poleAz, self.altitude, self.azimuth)
 
         r, theta = spherical_to_stereographic(phi, theta)
         y, x = polar_to_cartesian(r, theta)
@@ -41,5 +43,5 @@ class StarItem(QGraphicsEllipseItem):
         x, y = self.updateCoords(self.scene().poleAltitude, self.scene().poleAzimuth)
 
         # print(self.pos(), end=' ')
-        self.setRect(x * -1000, y * -1000, self.size, self.size)  # -x - self.size/2, -y - self.size/2)
+        self.setRect(x * -self.scene().scale, y * -self.scene().scale, self.size, self.size)  # -x - self.size/2, -y - self.size/2)
         # print(self.pos())

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent
+from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent, QGraphicsSceneWheelEvent
 from PySide6.QtGui import QPen, QBrush, QTransform
 from PySide6.QtCore import Qt
 
@@ -42,17 +42,26 @@ class StarScene(QGraphicsScene):
         pen = QPen(Qt.black, 1, Qt.DashDotLine, Qt.RoundCap, Qt.RoundJoin)
         brush = QBrush(Qt.GlobalColor.red)
 
-        self.addEllipse(-5, -5, 10, 10, pen, brush)
-
         for star in stars:
             star_item = StarItem(star[0], star[1], star[2], star[3], star[4])
             self.addItem(star_item)
 
+        self.addEllipse(-5, -5, 10, 10, pen, brush)
+
         self._dragging = False
+        self.scale = 1000
 
         self.advance()
 
-        QApplication.instance().updateTimer.timeout.connect(self.advance)
+        QApplication.instance().updateTimer.timeout.connect(self.updateItemCoordinates)
+
+    def updateItemCoordinates(self):
+
+        for item in self.items():
+            if type(item) is StarItem:
+                item.updateAltAz()
+
+        self.advance()
 
     def setDragging(self, dragging):
         self._dragging = dragging
@@ -75,13 +84,22 @@ class StarScene(QGraphicsScene):
             return
         diff = event.lastScreenPos() - event.screenPos()
 
-        self._centerAltitude -= diff.y() #* 0.1 # Dragging up should decrease altitude
-        self._centerAzimuth += diff.x() #* 0.1 # Dragging right should decrease azimuth
+        self._centerAltitude -= diff.y() * 0.1 # Dragging up should decrease altitude
+        self._centerAzimuth += diff.x() * 0.1 # Dragging right should decrease azimuth
 
-        # self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
-        # self._centerAzimuth %= 360.0
+        self._centerAltitude = max(-89.0, min(89.0, self._centerAltitude))
+        self._centerAzimuth %= 360.0
         # self._centerAzimuth = max(-360.0 * 2.5, min(self._centerAzimuth, 0))
 
-        self.views()[0].centerOn(self._centerAzimuth, -self._centerAltitude)
+        self.views()[0].centerOn(0, 0)
 
-        print(self._centerAltitude, self._centerAzimuth)
+        self.poleAltitude, self.poleAzimuth = get_pole(self._centerAltitude, self._centerAzimuth)
+        self.advance()
+
+    def wheelEvent(self, event: QGraphicsSceneWheelEvent) -> None:
+        event.accept()
+        if event.delta() > 0 and self.scale < 7500:
+            self.scale *= 1.1
+        elif event.delta() < 0 and self.scale > 500:
+            self.scale /= 1.1
+        self.advance()
