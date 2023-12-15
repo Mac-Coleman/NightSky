@@ -28,6 +28,10 @@ class SearchItem(QWidget, Ui_w_SearchItem):
         self.pk = pk
         self.pb_likeButton.setChecked(favorited)
         self.pb_likeButton.clicked.connect(self.handleFavorite)
+        self.pb_observeButton.clicked.connect(self.handleObserve)
+
+        self.altitude = 0
+        self.azimuth = 0
 
 
 
@@ -65,6 +69,9 @@ class SearchItem(QWidget, Ui_w_SearchItem):
     def handleFavorite(self, checked):
         pass
 
+    def handleObserve(self):
+        QApplication.instance().lookAt(self.altitude, self.azimuth)
+
 class SatelliteItem(SearchItem):
     def __init__(self, pk, favorited, title, desc, skyfield_object, norad_id):
         super().__init__(pk, favorited, title, desc, skyfield_object)
@@ -94,6 +101,7 @@ class SatelliteItem(SearchItem):
 
             radec = topocentric.radec()
             altaz = topocentric.altaz()
+            self.altitude, self.azimuth = altaz[0].degrees, altaz[1].degrees
 
         self.updateRA(radec[0])
         self.updateDEC(radec[1])
@@ -136,6 +144,8 @@ class PlanetItem(SearchItem):
         astrometric = geographic.at(skyTime).observe(self.object).apparent()
         radec = astrometric.radec()
         altaz = astrometric.altaz()
+
+        self.altitude, self.azimuth = altaz[0].degrees, altaz[1].degrees
 
         self.updateRA(radec[0])
         self.updateDEC(radec[1])
@@ -183,6 +193,8 @@ class StarItem(SearchItem):
         radec = astrometric.radec()
         altaz = astrometric.altaz()
 
+        self.altitude, self.azimuth = altaz[0].degrees, altaz[1].degrees
+
         self.updateRA(radec[0])
         self.updateDEC(radec[1])
         self.updateDist(radec[2].au * 1.58125e-5, "ly")
@@ -222,6 +234,8 @@ class MessierItem(SearchItem):
         astrometric = geographic.at(skyTime).observe(self.object).apparent()
         radec = astrometric.radec()
         altaz = astrometric.altaz()
+
+        self.altitude, self.azimuth = altaz[0].degrees, altaz[1].degrees
 
         self.updateRA(radec[0])
         self.updateDEC(radec[1])

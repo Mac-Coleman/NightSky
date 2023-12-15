@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Signal
 
 from skyfield.api import load, load_file, wgs84
 from skyfield.toposlib import Topos
@@ -8,6 +8,9 @@ from skyfield.toposlib import Topos
 from database import DatabaseManager
 
 class NightSkyApp (QApplication):
+
+    lookAtInViewport = Signal(float, float)
+
     def __init__(self, args):
         super().__init__(args)
 
@@ -40,3 +43,6 @@ class NightSkyApp (QApplication):
     def changeLocation(self, lat, long, elevation):
         self.geographic = self.earth + Topos(lat, long, elevation_m=elevation)
         self.wgs84 = wgs84.latlon(lat, long)
+
+    def lookAt(self, alt, az):
+        self.lookAtInViewport.emit(alt, az)

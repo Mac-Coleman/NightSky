@@ -1,4 +1,6 @@
-from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent, QGraphicsSceneWheelEvent
+import math
+
+from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent, QGraphicsSceneWheelEvent, QGraphicsItemGroup
 from PySide6.QtGui import QPen, QBrush, QTransform
 from PySide6.QtCore import Qt
 
@@ -46,15 +48,10 @@ class StarScene(QGraphicsScene):
 
         for star in stars:
             star_item = StarItem(star[0], star[1], star[2], star[3], star[4])
+            star_item.updateAltAz()
             self.addItem(star_item)
 
-        satellites = QApplication.instance().databaseManager.getFavoriteSatellites()
-
-        for sat in satellites:
-            line0, line1, line2, *_ = sat[5].split("\n")
-            es = EarthSatellite(line1, line2)
-            sat_item = SatelliteItem(sat[0], es, sat[3])
-            self.addItem(sat_item)
+        self.setupSatellites()
 
         self.addEllipse(-5, -5, 10, 10, pen, brush)
 
@@ -66,6 +63,24 @@ class StarScene(QGraphicsScene):
         self.advance()
 
         QApplication.instance().updateTimer.timeout.connect(self.updateItemCoordinates)
+        QApplication.instance().lookAtInViewport.connect(self.lookAt)
+
+    def lookAt(self, alt, az):
+        if math.isnan(alt) or math.isnan(az):
+            return
+        self._centerAzimuth = az
+        self._centerAltitude = alt
+        self.poleAltitude, self.poleAzimuth = get_pole(self._centerAltitude, self._centerAzimuth)
+        self.advance()
+
+    def setupSatellites(self):
+        satellites = QApplication.instance().databaseManager.getFavoriteSatellites()
+
+        for sat in satellites:
+            line0, line1, line2, *_ = sat[5].split("\n")
+            es = EarthSatellite(line1, line2)
+            sat_item = SatelliteItem(sat[0], es, sat[3])
+            self.addItem(sat_item)
 
     def updateItemCoordinates(self):
 
