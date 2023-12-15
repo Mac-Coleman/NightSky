@@ -3,6 +3,7 @@ from PySide6.QtGui import QPen, QBrush, QTransform
 from PySide6.QtCore import Qt
 
 from Star_View.StarItem import StarItem
+from Star_View.SatelliteItem import SatelliteItem
 
 from Utils.utils import get_pole
 
@@ -47,6 +48,8 @@ class StarScene(QGraphicsScene):
             self.addItem(star_item)
 
         self.addEllipse(-5, -5, 10, 10, pen, brush)
+
+        self.addItem(SatelliteItem(0, 0, "Test Satellite"))
 
         self._dragging = False
         self.scale = 1000
