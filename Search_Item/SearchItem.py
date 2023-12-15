@@ -187,11 +187,12 @@ class StarItem(SearchItem):
             return
 
         skyTime = QApplication.instance().skyTime
-        geographic = QApplication.instance().geographic
+        earth = QApplication.instance().earth
+        topocentric = QApplication.instance().wgs84
 
-        astrometric = geographic.at(skyTime).observe(self.object).apparent()
-        radec = astrometric.radec()
-        altaz = astrometric.altaz()
+        apparent = (earth + topocentric).at(skyTime).observe(self.object).apparent()
+        radec = apparent.radec()
+        altaz = apparent.altaz()
 
         self.altitude, self.azimuth = altaz[0].degrees, altaz[1].degrees
 

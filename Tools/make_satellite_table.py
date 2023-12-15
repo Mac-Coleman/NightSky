@@ -29,7 +29,10 @@ base_satellites = [
     ("Tiangong Space Station", "Space station operated by China, launched in 2021.", 48274),
     ("Hubble Space Telescope", "Space telescope operated by NASA.", 20580),
     ("Mir Space Station", "Russian space station deorbited in 2001.", 16609),
-    ("Starlink-46", "Deorbited in 2020.", 44246)
+    ("Starlink-46", "Deorbited in 2020.", 44246),
+    ("Starlink-5226", "Satellite of the Starlink constellation.", 54056),
+    ("Lemur 2 Miriwari", "Cubesat of the Lemur 2 constellation.", 51054),
+    ("Lemur 2 SarahBettyBoo", "Cubesat of the Lemur 2 Constellation.", 43888)
 ]
 
 ts = load.timescale()
@@ -60,7 +63,7 @@ for satellite in base_satellites:
         print("")
 
     search_text = ' '.join([satellite[0].lower(), satellite[1].lower(), str(satellite[2])])
-    data = (False, satellite[2], satellite[0], satellite[1], tle, int(time.time()), decayed, search_text)
+    data = (True, satellite[2], satellite[0], satellite[1], tle, int(time.time()), decayed, search_text)
 
     sql = "INSERT INTO satellite_objects (favorited, norad_id, name, desc, tle, refresh_time, decayed, search_text)" \
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"

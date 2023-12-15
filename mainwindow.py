@@ -12,6 +12,7 @@ from nightsky import NightSkyApp
 from Hello_Dialog.HelloDialog import HelloDialog
 from Star_View.StarView import StarView
 from Satellite_Manager.SatelliteManager import SatelliteManager
+from Predictions_Panel.PredictionsPanel import PredictionsPanel
 
 
 class MainWindow(QMainWindow):
@@ -30,8 +31,7 @@ class MainWindow(QMainWindow):
         tabs = QTabWidget()
         tabs.setTabPosition(QTabWidget.TabPosition.West)
 
-        tabs.addTab(NotificationTab(), "Notifications")
-        tabs.addTab(NotificationTab(), "All Events")
+        tabs.addTab(PredictionsPanel(), "Culminations")
         tabs.addTab(ObjectTab(), "Objects")
         tabs.addTab(SatelliteManager(), "Manage Satellites")
         tabs.addTab(QPushButton("What on earth"), "Settings")
@@ -149,6 +149,8 @@ class ObjectList(QWidget):
 
         self.favoritesOnly = favoritesOnly
         self.defaultEmpty = defaultEmpty
+
+        QApplication.instance().databaseUpdated.connect(self.handleEditingFinished)
 
         self.handleEditingFinished()
 

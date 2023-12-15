@@ -10,6 +10,7 @@ from database import DatabaseManager
 class NightSkyApp (QApplication):
 
     lookAtInViewport = Signal(float, float)
+    databaseUpdated = Signal()
 
     def __init__(self, args):
         super().__init__(args)
@@ -42,7 +43,10 @@ class NightSkyApp (QApplication):
 
     def changeLocation(self, lat, long, elevation):
         self.geographic = self.earth + Topos(lat, long, elevation_m=elevation)
-        self.wgs84 = wgs84.latlon(lat, long)
+        self.wgs84 = wgs84.latlon(lat, long, elevation_m=elevation)
 
     def lookAt(self, alt, az):
         self.lookAtInViewport.emit(alt, az)
+
+    def cleanDatabaseData(self):
+        self.databaseUpdated.emit()

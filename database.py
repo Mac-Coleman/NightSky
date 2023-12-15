@@ -177,6 +177,7 @@ class DatabaseManager(object):
         )
 
         self.connection.commit()
+        QApplication.instance().cleanDatabaseData()
 
     def getBrightStars(self):
         sql = 'SELECT pk, ra, dec, ap_mag, common_name FROM hipparcos_objects WHERE ap_mag < 5.0'
@@ -212,10 +213,11 @@ class DatabaseManager(object):
         except IndexError:
             raise ValueError(f"{id} could not be retrieved.")
 
-        data = (0, id, name, desc, tle, int(time.time()), False, ' '.join([name.lower(), desc.lower(), id]))
+        data = (True, id, name, desc, tle, int(time.time()), False, ' '.join([name.lower(), desc.lower(), id]))
 
         self.cursor.execute(sql, data)
         self.connection.commit()
+        QApplication.instance().cleanDatabaseData()
 
     def refreshOutOfDate(self):
         fetch = "SELECT pk, norad_id FROM satellite_objects WHERE refresh_time < ?"
@@ -239,6 +241,7 @@ class DatabaseManager(object):
             self.cursor.execute(update, data)
 
         self.connection.commit()
+        QApplication.instance().cleanDatabaseData()
 
     def refreshAll(self):
         fetch = "SELECT pk, norad_id FROM satellite_objects"
@@ -261,6 +264,7 @@ class DatabaseManager(object):
             self.cursor.execute(update, data)
 
         self.connection.commit()
+        QApplication.instance().cleanDatabaseData()
 
     def deleteSatellite(self, pk):
         delete = "DELETE FROM satellite_objects WHERE pk = ?"
@@ -268,6 +272,7 @@ class DatabaseManager(object):
 
         self.cursor.execute(delete, data)
         self.connection.commit()
+        QApplication.instance().cleanDatabaseData()
 
     def deleteDecayed(self):
         fetch = "SELECT * FROM satellite_objects"
@@ -284,6 +289,7 @@ class DatabaseManager(object):
             geocentric = s.at(QApplication.instance().skyTime)
             if math.isnan(geocentric.position.km[0]):
                 self.deleteSatellite(sat[0])
+        QApplication.instance().cleanDatabaseData()
 
 
 

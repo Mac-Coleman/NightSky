@@ -51,6 +51,8 @@ class StarScene(QGraphicsScene):
             star_item.updateAltAz()
             self.addItem(star_item)
 
+        self.satellites = []
+
         self.setupSatellites()
 
         self.addEllipse(-5, -5, 10, 10, pen, brush)
@@ -64,6 +66,7 @@ class StarScene(QGraphicsScene):
 
         QApplication.instance().updateTimer.timeout.connect(self.updateItemCoordinates)
         QApplication.instance().lookAtInViewport.connect(self.lookAt)
+        QApplication.instance().databaseUpdated.connect(self.setupSatellites)
 
     def lookAt(self, alt, az):
         if math.isnan(alt) or math.isnan(az):
@@ -74,12 +77,19 @@ class StarScene(QGraphicsScene):
         self.advance()
 
     def setupSatellites(self):
+        for sat in self.satellites:
+            sat.setParentItem(None)
+            del sat
+
+        self.satellites = []
+
         satellites = QApplication.instance().databaseManager.getFavoriteSatellites()
 
         for sat in satellites:
             line0, line1, line2, *_ = sat[5].split("\n")
             es = EarthSatellite(line1, line2)
             sat_item = SatelliteItem(sat[0], es, sat[3])
+            self.satellites.append(sat_item)
             self.addItem(sat_item)
 
     def updateItemCoordinates(self):
