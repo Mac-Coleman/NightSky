@@ -162,6 +162,8 @@ class PlanetItem(SearchItem):
     def handleInfo(self):
         if self.title == "Mercury":
             self.title = "Mercury (planet)"
+        if self.title == "The Sun (Sol)":
+            self.title = "Sun"
         webbrowser.open("https://en.wikipedia.org/wiki/" + self.title.replace(" ", "_"))
 
     def handleFavorite(self, checked):
