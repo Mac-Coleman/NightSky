@@ -5,6 +5,7 @@ import time
 import math
 
 from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import Qt
 
 from skyfield.api import Star, EarthSatellite
 
@@ -178,7 +179,7 @@ class DatabaseManager(object):
         self.connection.commit()
 
     def getBrightStars(self):
-        sql = 'SELECT pk, ra, dec, ap_mag FROM hipparcos_objects WHERE ap_mag < 5.0'
+        sql = 'SELECT pk, ra, dec, ap_mag, common_name FROM hipparcos_objects WHERE ap_mag < 5.0'
         rows = self.cursor.execute(sql)
         return list(rows)
         # test

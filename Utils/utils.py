@@ -9,8 +9,10 @@ def ra_dec_to_alt_az(ra_deg, dec_deg, lat_deg, long_deg, t):
     long = long_deg * math.pi/180
 
     # All angles in radians
-    gmst = t.gmst * 120
-    local_sidereal_time = js_modulo(gmst + long, 2 * math.pi)
+    gmst = t.gmst
+    angle = (gmst / 24.0) * 2 * math.pi
+    local_sidereal_time = (angle + long) % (2 * math.pi)
+    print(gmst, angle, local_sidereal_time)
 
     h = local_sidereal_time - ra
     if h < 0:

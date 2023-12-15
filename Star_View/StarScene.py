@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QApplication, QGraphicsScene, QGraphicsSceneMouseEvent
-from PySide6.QtGui import QPen, QBrush
+from PySide6.QtGui import QPen, QBrush, QTransform
 from PySide6.QtCore import Qt
 
 from Star_View.StarItem import StarItem
@@ -45,7 +45,7 @@ class StarScene(QGraphicsScene):
         self.addEllipse(-5, -5, 10, 10, pen, brush)
 
         for star in stars:
-            star_item = StarItem(star[0], star[1], star[2], star[3])
+            star_item = StarItem(star[0], star[1], star[2], star[3], star[4])
             self.addItem(star_item)
 
         self._dragging = False

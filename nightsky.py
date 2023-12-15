@@ -30,7 +30,7 @@ class NightSkyApp (QApplication):
         self.wgs84 = wgs84.latlon(lat, lon)
 
         self.updateTimer = QTimer()
-        self.updateTimer.setInterval(1000) # Update every second
+        self.updateTimer.setInterval(5000) # Update every second
         self.updateTimer.timeout.connect(self.handleUpdateTimer)
         self.updateTimer.start()
 

@@ -1,15 +1,16 @@
 import pandas
-from PySide6.QtWidgets import QApplication, QGraphicsEllipseItem
+from PySide6.QtWidgets import QApplication, QGraphicsEllipseItem, QGraphicsSceneMouseEvent
 from PySide6.QtGui import QPen, QBrush, QColor
 from PySide6.QtCore import Qt
 
 from Utils.utils import ra_dec_to_alt_az, zenith_angle_to_pole, azimuth_angle_to_pole, spherical_to_stereographic, polar_to_cartesian
+from Search_Item import SearchItem
 
 class StarItem(QGraphicsEllipseItem):
 
     pen = QPen(QColor.fromRgb(0, 0, 0, 0))
     brush = QBrush(Qt.white)
-    def __init__(self, pk, ra, dec, ap_mag, parent=None):
+    def __init__(self, pk, ra, dec, ap_mag, name, parent=None):
         super().__init__(parent)
         self.pk = pk
         self.ra = ra
@@ -17,6 +18,7 @@ class StarItem(QGraphicsEllipseItem):
         self.size = (1 + 6 - ap_mag) ** 1.4
         #self.setPen(StarItem.pen)
         self.setBrush(StarItem.brush)
+        self.setToolTip(name)
 
         self.setRect(ra*10 - self.size/2, dec*10 - self.size/2, self.size, self.size)
         # self.updateCoords(0, 180)

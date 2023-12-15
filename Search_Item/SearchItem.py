@@ -80,6 +80,8 @@ class SatelliteItem(SearchItem):
             print("Running in test mode?")
 
     def updatePosition(self):
+        if self.visibleRegion().isEmpty():
+            return
         radec = ["unknown", "unknown", 0.00]
         altaz = ["unknown", "unknown"]
 
